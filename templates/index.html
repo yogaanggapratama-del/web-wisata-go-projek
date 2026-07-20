@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section class="hero">
+  <div class="contour"></div>
+  <div class="container hero-inner">
+    <div>
+      <p class="eyebrow" style="color:var(--gold);">Kabupaten Sleman · Yogyakarta</p>
+      <h1>Jelajahi lereng Merapi, <em>tanpa antre di loket.</em></h1>
+      <p class="lead">GoWisata menghubungkan wisatawan dengan destinasi wisata Sleman — pesan tiket, bayar, dan dapatkan e-tiket QR Code dalam hitungan menit.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="{{ url_for('destinations') }}" class="btn btn-primary">Cari Destinasi</a>
+        <a href="#cara-kerja" class="btn btn-ghost" style="color:#fff;border-color:rgba(255,255,255,0.4);">Cara Kerja</a>
+      </div>
+      <div class="hero-stats">
+        <div><b>{{ featured|length }}+</b><span>Destinasi aktif</span></div>
+        <div><b>3</b><span>Peran pengguna</span></div>
+        <div><b>QR</b><span>E-tiket digital</span></div>
+      </div>
+    </div>
+    <div class="search-card">
+      <p class="eyebrow" style="margin-bottom:12px;">Cari cepat</p>
+      <form action="{{ url_for('destinations') }}" method="get">
+        <div>
+          <label>Kata kunci</label>
+          <input type="text" name="q" placeholder="Kaliurang, candi, air terjun...">
+        </div>
+        <div>
+          <label>Kategori</label>
+          <select name="category">
+            <option value="">Semua kategori</option>
+            <option value="Pegunungan">Pegunungan</option>
+            <option value="Budaya">Budaya</option>
+            <option value="Petualangan">Petualangan</option>
+            <option value="Alam Buatan">Alam Buatan</option>
+          </select>
+        </div>
+        <button class="btn btn-dark btn-block" type="submit">Telusuri Destinasi</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Rekomendasi</p>
+        <h2>Destinasi pilihan minggu ini</h2>
+      </div>
+      <a href="{{ url_for('destinations') }}" class="btn btn-outline btn-sm">Lihat semua destinasi →</a>
+    </div>
+    <div class="grid grid-3">
+      {% for d in featured %}
+      <a href="{{ url_for('destination_detail', dest_id=d.id) }}" class="card-dest">
+        <div class="thumb">
+          <span class="badge">{{ d.category }}</span>
+          <img src="{{ url_for('static', filename='img/destinations/' ~ d.image) }}" alt="{{ d.name }}">
+        </div>
+        <div class="body">
+          <h3>{{ d.name }}</h3>
+          <div class="loc">📍 {{ d.location }}</div>
+          <div class="foot">
+            <span class="price">{{ d.price|rupiah }}<span style="font-size:.7rem;color:var(--stone);font-weight:500;"> /tiket</span></span>
+            <span class="pill">Detail →</span>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="cara-kerja" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="container">
+    <div class="section-head"><div><p class="eyebrow">Alur Pemesanan</p><h2>Empat langkah, satu tiket digital</h2></div></div>
+    <div class="grid grid-4">
+      <div class="ticket-visual"><p class="eyebrow">01</p><h3 style="font-size:1.05rem;">Cari &amp; Pilih</h3><p style="font-size:.88rem;color:var(--stone);">Telusuri destinasi wisata Sleman sesuai minat dan kategori.</p></div>
+      <div class="ticket-visual"><p class="eyebrow">02</p><h3 style="font-size:1.05rem;">Pesan Tiket</h3><p style="font-size:.88rem;color:var(--stone);">Tentukan tanggal kunjungan dan jumlah tiket yang dibutuhkan.</p></div>
+      <div class="ticket-visual"><p class="eyebrow">03</p><h3 style="font-size:1.05rem;">Bayar Simulasi</h3><p style="font-size:.88rem;color:var(--stone);">Selesaikan pembayaran (simulasi) langsung dari dashboard.</p></div>
+      <div class="ticket-visual"><p class="eyebrow">04</p><h3 style="font-size:1.05rem;">Tunjukkan QR</h3><p style="font-size:.88rem;color:var(--stone);">Petugas memindai QR Code e-tiket saat masuk lokasi wisata.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container split">
+    <div>
+      <p class="eyebrow">Untuk Tiga Peran</p>
+      <h2>Satu sistem, tiga sudut pandang</h2>
+      <p style="color:var(--stone);max-width:60ch;">GoWisata melayani wisatawan yang memesan tiket, admin pengelola wisata yang memverifikasi kunjungan, dan owner (Dinas Pariwisata) yang memantau statistik dan pendapatan secara real-time.</p>
+    </div>
+    <div class="grid" style="gap:16px;">
+      <div class="stat-card"><span class="pill pill-ember">Wisatawan</span><h3 style="margin-top:10px;font-size:1.1rem;">Pesan &amp; kelola tiket</h3><p style="font-size:.85rem;color:var(--stone);">Riwayat pemesanan, e-tiket QR Code, status kunjungan.</p></div>
+      <div class="stat-card"><span class="pill pill-gold">Admin</span><h3 style="margin-top:10px;font-size:1.1rem;">Kelola &amp; verifikasi</h3><p style="font-size:.85rem;color:var(--stone);">CRUD destinasi, verifikasi QR Code, laporan transaksi.</p></div>
+      <div class="stat-card"><span class="pill">Owner</span><h3 style="margin-top:10px;font-size:1.1rem;">Pantau performa</h3><p style="font-size:.85rem;color:var(--stone);">Statistik kunjungan, pendapatan, destinasi terpopuler.</p></div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

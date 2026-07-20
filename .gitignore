@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.pyc
+gowisata.db
+static/qrcodes/*.png
+.DS_Store
+*.log

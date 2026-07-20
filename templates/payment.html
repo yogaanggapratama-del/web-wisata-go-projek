@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Pembayaran — GoWisata{% endblock %}
+{% block content %}
+<section style="padding-top:48px;">
+  <div class="container" style="max-width:520px;">
+    <div class="stat-card">
+      <p class="eyebrow">Simulasi Pembayaran</p>
+      <h1 style="font-size:1.6rem;">Selesaikan Pemesanan</h1>
+
+      <div class="eticket-meta">
+        <div><span>Kode Pemesanan</span><span>{{ booking.code }}</span></div>
+        <div><span>Destinasi</span><span>{{ booking.destination.name }}</span></div>
+        <div><span>Tanggal Kunjungan</span><span>{{ booking.visit_date.strftime('%d %B %Y') }}</span></div>
+        <div><span>Jumlah Tiket</span><span>{{ booking.qty }}</span></div>
+        <div><span>Total Bayar</span><span style="color:var(--ember);font-size:1.1rem;">{{ booking.total_price|rupiah }}</span></div>
+        <div><span>Status</span><span><span class="status-badge status-{{ booking.status }}">{{ booking.status }}</span></span></div>
+      </div>
+
+      {% if booking.status == 'pending' %}
+      <form method="post" style="margin-top:24px;">
+        <div class="form-group">
+          <label>Metode Pembayaran (Simulasi)</label>
+          <select name="method">
+            <option>Transfer Bank (Simulasi)</option>
+            <option>QRIS (Simulasi)</option>
+            <option>E-Wallet (Simulasi)</option>
+          </select>
+        </div>
+        <p class="form-hint">Ini adalah simulasi pembayaran untuk keperluan demo — tidak ada transaksi uang sungguhan.</p>
+        <button class="btn btn-primary btn-block" type="submit" style="margin-top:12px;">Bayar Sekarang</button>
+      </form>
+      {% else %}
+      <a href="{{ url_for('ticket', booking_id=booking.id) }}" class="btn btn-dark btn-block" style="margin-top:20px;">Lihat E-Tiket</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

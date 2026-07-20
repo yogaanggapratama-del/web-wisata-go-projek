@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}E-Tiket {{ booking.code }} — GoWisata{% endblock %}
+{% block content %}
+<section style="padding-top:40px;padding-bottom:60px;">
+  <div class="container">
+    <div class="eticket">
+      <div class="eticket-head">
+        <p class="eyebrow">GoWisata E-Ticket</p>
+        <h2 style="color:#fff;font-size:1.4rem;">{{ booking.destination.name }}</h2>
+        <p style="font-size:.85rem;opacity:.8;">{{ booking.destination.location }}</p>
+      </div>
+      <div class="perforation"></div>
+      <div class="eticket-body">
+        <img class="qr" src="{{ url_for('static', filename='qrcodes/' ~ booking.code ~ '.png') }}" alt="QR Code Tiket">
+        <p style="font-family:var(--font-mono);letter-spacing:.05em;color:var(--stone);">{{ booking.code }}</p>
+        <span class="status-badge status-{{ booking.status }}">{{ booking.status }}</span>
+
+        <div class="eticket-meta">
+          <div><span>Nama Pemesan</span><span>{{ booking.user.name }}</span></div>
+          <div><span>Tanggal Kunjungan</span><span>{{ booking.visit_date.strftime('%d %B %Y') }}</span></div>
+          <div><span>Jumlah Tiket</span><span>{{ booking.qty }} orang</span></div>
+          <div><span>Total Bayar</span><span>{{ booking.total_price|rupiah }}</span></div>
+          {% if booking.used_at %}
+          <div><span>Digunakan pada</span><span>{{ booking.used_at.strftime('%d-%m-%Y %H:%M') }}</span></div>
+          {% endif %}
+        </div>
+        <p class="form-hint" style="margin-top:16px;">Tunjukkan QR Code ini kepada petugas di lokasi wisata untuk verifikasi masuk.</p>
+        <a href="{{ url_for('user_dashboard') }}" class="btn btn-outline btn-block" style="margin-top:16px;">Kembali ke Dashboard</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

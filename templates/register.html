@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Daftar — GoWisata{% endblock %}
+{% block content %}
+<div class="form-card">
+  <p class="eyebrow">Mulai perjalanan Anda</p>
+  <h1>Buat Akun Wisatawan</h1>
+  <form method="post" style="margin-top:20px;">
+    <div class="form-group">
+      <label>Nama Lengkap</label>
+      <input type="text" name="name" required autofocus placeholder="Nama Anda">
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" name="email" required placeholder="nama@email.com">
+    </div>
+    <div class="form-group">
+      <label>No. HP</label>
+      <input type="text" name="phone" placeholder="0812xxxxxxx">
+    </div>
+    <div class="form-group">
+      <label>Kata Sandi</label>
+      <input type="password" name="password" required placeholder="Minimal 6 karakter">
+    </div>
+    <div class="form-group">
+      <label>Konfirmasi Kata Sandi</label>
+      <input type="password" name="confirm" required placeholder="Ulangi kata sandi">
+    </div>
+    <button class="btn btn-primary btn-block" type="submit">Daftar Sekarang</button>
+  </form>
+  <p class="form-hint">Sudah punya akun? <a href="{{ url_for('login') }}" style="color:var(--ember);font-weight:700;">Masuk di sini</a></p>
+</div>
+{% endblock %}

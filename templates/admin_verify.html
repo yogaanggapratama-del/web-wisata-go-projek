@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Verifikasi Tiket — GoWisata{% endblock %}
+{% block content %}
+<div class="dash">
+  <aside class="dash-side">
+    <p class="role-tag">Admin</p>
+    <nav>
+      <a href="{{ url_for('admin_dashboard') }}">Ringkasan</a>
+      <a href="{{ url_for('admin_destinations') }}">Kelola Destinasi</a>
+      <a class="active" href="{{ url_for('admin_verify') }}">Verifikasi Tiket</a>
+      <a href="{{ url_for('admin_transactions') }}">Transaksi</a>
+    </nav>
+  </aside>
+  <main class="dash-main">
+    <p class="eyebrow">Admin Panel</p>
+    <h1 style="font-size:1.6rem;">Verifikasi QR Code Tiket</h1>
+    <p style="color:var(--stone);max-width:60ch;">Masukkan kode tiket (mis. <code>GW-123456</code>) atau tempel isi payload QR Code hasil pindai untuk memverifikasi keabsahan tiket wisatawan.</p>
+
+    <form method="post" class="stat-card" style="max-width:480px;margin-top:20px;">
+      <div class="form-group">
+        <label>Kode Tiket / Payload QR</label>
+        <input type="text" name="qr_payload" placeholder="GW-123456 atau GOWISATA|GW-123456|TOKEN" required autofocus>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Verifikasi Tiket</button>
+    </form>
+
+    {% if result %}
+    <div class="stat-card" style="max-width:480px;margin-top:16px;border-left:5px solid {{ 'var(--forest)' if result.valid else 'var(--ember)' }};">
+      <span class="pill {{ 'pill-gold' if result.valid else 'pill-danger' }}">{{ 'TIKET VALID' if result.valid else 'TIDAK VALID' }}</span>
+      <p style="margin-top:10px;">{{ result.message }}</p>
+      {% if result.booking %}
+      <div class="eticket-meta">
+        <div><span>Kode</span><span>{{ result.booking.code }}</span></div>
+        <div><span>Wisatawan</span><span>{{ result.booking.user.name }}</span></div>
+        <div><span>Destinasi</span><span>{{ result.booking.destination.name }}</span></div>
+        <div><span>Tanggal Kunjungan</span><span>{{ result.booking.visit_date.strftime('%d-%m-%Y') }}</span></div>
+        <div><span>Jumlah</span><span>{{ result.booking.qty }} orang</span></div>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </main>
+</div>
+{% endblock %}

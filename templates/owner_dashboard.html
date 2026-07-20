@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Owner Panel — GoWisata{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+{% endblock %}
+{% block content %}
+<div class="dash">
+  <aside class="dash-side">
+    <p class="role-tag">Owner · Dinas Pariwisata</p>
+    <nav>
+      <a class="active" href="{{ url_for('owner_dashboard') }}">Statistik</a>
+      <a href="{{ url_for('destinations') }}">Destinasi</a>
+    </nav>
+  </aside>
+  <main class="dash-main">
+    <p class="eyebrow">Owner Panel</p>
+    <h1 style="font-size:1.8rem;">Statistik &amp; Laporan Pendapatan</h1>
+
+    <div class="stat-grid" style="margin-top:24px;">
+      <div class="stat-card"><span class="eyebrow">Total Pendapatan</span><b>{{ total_revenue|rupiah }}</b></div>
+      <div class="stat-card"><span class="eyebrow">Total Pengunjung</span><b>{{ total_visitors }}</b></div>
+      <div class="stat-card"><span class="eyebrow">Total Transaksi</span><b>{{ total_bookings }}</b></div>
+      <div class="stat-card"><span class="eyebrow">Destinasi Terpopuler</span><b style="font-size:1.1rem;">{{ dest_stats[0].name if dest_stats else '-' }}</b></div>
+    </div>
+
+    <div class="split">
+      <div class="stat-card">
+        <p class="eyebrow">Tren Bulanan</p>
+        <h3 style="font-size:1.1rem;">Pendapatan &amp; Kunjungan per Bulan</h3>
+        <canvas id="trendChart" height="220"></canvas>
+      </div>
+      <div class="stat-card">
+        <p class="eyebrow">Peringkat</p>
+        <h3 style="font-size:1.1rem;">Destinasi Terpopuler</h3>
+        <canvas id="popularChart" height="260"></canvas>
+      </div>
+    </div>
+
+    <div style="margin-top:32px;">
+      <p class="eyebrow">Rincian</p>
+      <h3 style="font-size:1.1rem;margin-bottom:16px;">Data Wisata Terpopuler</h3>
+      <div class="table-responsive"><table>
+        <thead><tr><th>#</th><th>Destinasi</th><th>Pengunjung</th><th>Pendapatan</th></tr></thead>
+        <tbody>
+          {% for d in dest_stats %}
+          <tr><td>{{ loop.index }}</td><td>{{ d.name }}</td><td>{{ d.visitors }}</td><td>{{ d.revenue|rupiah }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table></div>
+    </div>
+  </main>
+</div>
+
+<script>
+const monthly = {{ monthly|tojson }};
+const labels = monthly.map(m => m[0]);
+const revenue = monthly.map(m => m[1].revenue);
+const visitors = monthly.map(m => m[1].visitors);
+
+new Chart(document.getElementById('trendChart'), {
+  type: 'line',
+  data: {
+    labels: labels,
+    datasets: [
+      { label: 'Pendapatan (Rp)', data: revenue, borderColor: '#BF4E30', backgroundColor: 'rgba(191,78,48,0.15)', tension: .35, fill: true, yAxisID: 'y' },
+      { label: 'Pengunjung', data: visitors, borderColor: '#1F3A2E', backgroundColor: 'rgba(31,58,46,0.1)', tension: .35, fill: true, yAxisID: 'y1' }
+    ]
+  },
+  options: {
+    responsive: true,
+    interaction: { mode: 'index', intersect: false },
+    scales: {
+      y: { position: 'left', title: { display: true, text: 'Rp' } },
+      y1: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Pengunjung' } }
+    }
+  }
+});
+
+const destNames = {{ dest_stats|map(attribute='name')|list|tojson }};
+const destVisitors = {{ dest_stats|map(attribute='visitors')|list|tojson }};
+
+new Chart(document.getElementById('popularChart'), {
+  type: 'bar',
+  data: {
+    labels: destNames,
+    datasets: [{ label: 'Pengunjung', data: destVisitors, backgroundColor: '#D4A017' }]
+  },
+  options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } } }
+});
+</script>
+{% endblock %}

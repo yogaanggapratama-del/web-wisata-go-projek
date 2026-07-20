@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Masuk — GoWisata{% endblock %}
+{% block content %}
+<div class="form-card">
+  <p class="eyebrow">Selamat datang kembali</p>
+  <h1>Masuk ke GoWisata</h1>
+  <form method="post" style="margin-top:20px;">
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" name="email" required autofocus placeholder="nama@email.com">
+    </div>
+    <div class="form-group">
+      <label>Kata Sandi</label>
+      <input type="password" name="password" required placeholder="••••••••">
+    </div>
+    <button class="btn btn-primary btn-block" type="submit">Masuk</button>
+  </form>
+  <p class="form-hint">Belum punya akun? <a href="{{ url_for('register') }}" style="color:var(--ember);font-weight:700;">Daftar sebagai wisatawan</a></p>
+
+  <div class="demo-box">
+    <b>Akun demo:</b><br>
+    Wisatawan: budi@gowisata.id / user123<br>
+    Admin: admin@gowisata.id / admin123<br>
+    Owner: owner@gowisata.id / owner123
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}GoWisata — Pemesanan Tiket Wisata Sleman{% endblock %}</title>
+<link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a class="brand" href="{{ url_for('index') }}">
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="GoWisata">
+      GoWisata
+    </a>
+    <div class="nav-links">
+      <a href="{{ url_for('index') }}">Beranda</a>
+      <a href="{{ url_for('destinations') }}">Destinasi</a>
+      {% if current_user %}
+        {% if current_user.role == 'user' %}<a href="{{ url_for('user_dashboard') }}">Dashboard Saya</a>{% endif %}
+        {% if current_user.role == 'admin' %}<a href="{{ url_for('admin_dashboard') }}">Admin Panel</a>{% endif %}
+        {% if current_user.role == 'owner' %}<a href="{{ url_for('owner_dashboard') }}">Owner Panel</a>{% endif %}
+      {% endif %}
+    </div>
+    <div class="nav-cta">
+      {% if current_user %}
+        <span class="user-chip">{{ current_user.name }} · {{ current_user.role }}</span>
+        <a class="btn btn-ghost btn-sm" href="{{ url_for('logout') }}">Keluar</a>
+      {% else %}
+        <a class="btn btn-ghost btn-sm" href="{{ url_for('login') }}">Masuk</a>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('register') }}">Daftar</a>
+      {% endif %}
+      <button class="hamburger" id="hamburgerBtn" aria-label="Buka menu"><span></span></button>
+    </div>
+  </div>
+  <div class="mobile-drawer" id="mobileDrawer">
+    <a href="{{ url_for('index') }}">Beranda</a>
+    <a href="{{ url_for('destinations') }}">Destinasi</a>
+    {% if current_user %}
+      {% if current_user.role == 'user' %}<a href="{{ url_for('user_dashboard') }}">Dashboard Saya</a>{% endif %}
+      {% if current_user.role == 'admin' %}<a href="{{ url_for('admin_dashboard') }}">Admin Panel</a>{% endif %}
+      {% if current_user.role == 'owner' %}<a href="{{ url_for('owner_dashboard') }}">Owner Panel</a>{% endif %}
+      <a href="{{ url_for('logout') }}">Keluar</a>
+    {% else %}
+      <a href="{{ url_for('login') }}">Masuk</a>
+      <a href="{{ url_for('register') }}">Daftar</a>
+    {% endif %}
+  </div>
+</nav>
+<script>
+  const hbtn = document.getElementById('hamburgerBtn');
+  const drawer = document.getElementById('mobileDrawer');
+  if (hbtn) {
+    hbtn.addEventListener('click', () => {
+      drawer.classList.toggle('open');
+    });
+  }
+</script>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="alerts" id="alerts">
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  <script>setTimeout(()=>{const a=document.getElementById('alerts'); if(a) a.style.display='none';}, 4500);</script>
+  {% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+
+<footer>
+  <div class="container">
+    <div>
+      <div class="brand">GoWisata</div>
+      <p style="max-width:32ch;font-size:.85rem;margin-top:10px;">Sistem informasi pemesanan tiket wisata berbasis web untuk destinasi di Kabupaten Sleman.</p>
+    </div>
+    <div>
+      <p class="eyebrow" style="color:var(--gold);">Wilayah Layanan</p>
+      <p style="font-size:.85rem;">Kaliurang · Kaliadem · Prambanan · Ratu Boko · Tebing Breksi</p>
+    </div>
+    <div>
+      <p class="eyebrow" style="color:var(--gold);">Proyek Akademik</p>
+      <p style="font-size:.85rem;">UAS Rekayasa Perangkat Lunak — D3 Teknik Informatika<br>Universitas AMIKOM Yogyakarta</p>
+    </div>
+  </div>
+  <div class="container"><small>&copy; 2026 GoWisata. Dibuat untuk keperluan tugas &amp; demo kompetisi.</small></div>
+</footer>
+
+</body>
+</html>

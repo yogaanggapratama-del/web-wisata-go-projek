@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Error {{ code }} — GoWisata{% endblock %}
+{% block content %}
+<div class="empty-state" style="padding:120px 20px;">
+  <p class="eyebrow">Error {{ code }}</p>
+  <h1 style="font-size:2rem;">{{ message }}</h1>
+  <a href="{{ url_for('index') }}" class="btn btn-dark" style="margin-top:16px;">Kembali ke Beranda</a>
+</div>
+{% endblock %}

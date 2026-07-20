@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Laporan Transaksi — GoWisata{% endblock %}
+{% block content %}
+<div class="dash">
+  <aside class="dash-side">
+    <p class="role-tag">Admin</p>
+    <nav>
+      <a href="{{ url_for('admin_dashboard') }}">Ringkasan</a>
+      <a href="{{ url_for('admin_destinations') }}">Kelola Destinasi</a>
+      <a href="{{ url_for('admin_verify') }}">Verifikasi Tiket</a>
+      <a class="active" href="{{ url_for('admin_transactions') }}">Transaksi</a>
+    </nav>
+  </aside>
+  <main class="dash-main">
+    <p class="eyebrow">Admin Panel</p>
+    <h1 style="font-size:1.6rem;">Laporan Transaksi &amp; Kunjungan</h1>
+
+    <div class="chip-row" style="margin-top:16px;">
+      <a class="chip {{ 'active' if not status }}" href="{{ url_for('admin_transactions') }}">Semua</a>
+      <a class="chip {{ 'active' if status=='pending' }}" href="{{ url_for('admin_transactions', status='pending') }}">Menunggu</a>
+      <a class="chip {{ 'active' if status=='paid' }}" href="{{ url_for('admin_transactions', status='paid') }}">Dibayar</a>
+      <a class="chip {{ 'active' if status=='used' }}" href="{{ url_for('admin_transactions', status='used') }}">Digunakan</a>
+    </div>
+
+    {% if items %}
+    <div class="table-responsive"><table>
+      <thead><tr><th>Kode</th><th>Wisatawan</th><th>Destinasi</th><th>Tgl Kunjungan</th><th>Qty</th><th>Total</th><th>Status</th><th>Dibuat</th></tr></thead>
+      <tbody>
+        {% for b in items %}
+        <tr>
+          <td style="font-family:var(--font-mono);">{{ b.code }}</td>
+          <td>{{ b.user.name }}</td>
+          <td>{{ b.destination.name }}</td>
+          <td>{{ b.visit_date.strftime('%d-%m-%Y') }}</td>
+          <td>{{ b.qty }}</td>
+          <td>{{ b.total_price|rupiah }}</td>
+          <td><span class="status-badge status-{{ b.status }}">{{ b.status }}</span></td>
+          <td>{{ b.created_at.strftime('%d-%m-%Y %H:%M') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}
+    <div class="empty-state"><h3>Tidak ada data transaksi</h3></div>
+    {% endif %}
+  </main>
+</div>
+{% endblock %}

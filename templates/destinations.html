@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Destinasi Wisata — GoWisata{% endblock %}
+{% block content %}
+<section style="padding-top:40px;">
+  <div class="container">
+    <p class="eyebrow">Jelajahi</p>
+    <h1 style="font-size:2rem;margin-bottom:24px;">Destinasi Wisata Sleman</h1>
+
+    <form method="get" style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+      <input type="text" name="q" value="{{ q }}" placeholder="Cari nama destinasi..." style="max-width:320px;">
+      <select name="category" style="max-width:220px;" onchange="this.form.submit()">
+        <option value="">Semua kategori</option>
+        {% for c in categories %}
+        <option value="{{ c }}" {% if c == category %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+      </select>
+      <button class="btn btn-dark" type="submit">Cari</button>
+      {% if q or category %}<a class="btn btn-ghost" href="{{ url_for('destinations') }}">Reset</a>{% endif %}
+    </form>
+
+    {% if items %}
+    <div class="grid grid-3">
+      {% for d in items %}
+      <a href="{{ url_for('destination_detail', dest_id=d.id) }}" class="card-dest">
+        <div class="thumb">
+          <span class="badge">{{ d.category }}</span>
+          <img src="{{ url_for('static', filename='img/destinations/' ~ d.image) }}" alt="{{ d.name }}">
+        </div>
+        <div class="body">
+          <h3>{{ d.name }}</h3>
+          <div class="loc">📍 {{ d.location }}</div>
+          <p style="font-size:.85rem;color:var(--stone);">{{ d.description[:90] }}...</p>
+          <div class="foot">
+            <span class="price">{{ d.price|rupiah }}</span>
+            <span class="pill">Detail →</span>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <h3>Tidak ada destinasi ditemukan</h3>
+      <p>Coba kata kunci lain atau reset filter pencarian.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

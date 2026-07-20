@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}{{ dest.name }} — GoWisata{% endblock %}
+{% block content %}
+<section style="padding-top:36px;">
+  <div class="container">
+    <a href="{{ url_for('destinations') }}" style="font-size:.85rem;color:var(--stone);">← Kembali ke daftar destinasi</a>
+
+    <div class="split" style="margin-top:20px;">
+      <div>
+        <div class="thumb" style="border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);aspect-ratio:16/9;">
+          <img src="{{ url_for('static', filename='img/destinations/' ~ dest.image) }}" alt="{{ dest.name }}">
+        </div>
+
+        <div style="margin-top:24px;">
+          <span class="pill pill-ember">{{ dest.category }}</span>
+          <h1 style="margin-top:12px;">{{ dest.name }}</h1>
+          <p class="loc" style="font-size:.95rem;">📍 {{ dest.location }}</p>
+          <p style="margin-top:16px;color:var(--ink);max-width:65ch;">{{ dest.description }}</p>
+        </div>
+
+        <div style="margin-top:32px;">
+          <p class="eyebrow">Lokasi</p>
+          <h3 style="font-size:1.1rem;margin-bottom:12px;">Peta Lokasi (Google Maps)</h3>
+          <div class="map-frame">
+            <iframe loading="lazy"
+              src="https://maps.google.com/maps?q={{ dest.latitude }},{{ dest.longitude }}&z=14&output=embed">
+            </iframe>
+          </div>
+        </div>
+
+        {% if related %}
+        <div style="margin-top:40px;">
+          <p class="eyebrow">Serupa</p>
+          <h3 style="font-size:1.1rem;margin-bottom:16px;">Destinasi kategori {{ dest.category }} lainnya</h3>
+          <div class="grid grid-3">
+            {% for r in related %}
+            <a href="{{ url_for('destination_detail', dest_id=r.id) }}" class="card-dest">
+              <div class="thumb"><img src="{{ url_for('static', filename='img/destinations/' ~ r.image) }}" alt="{{ r.name }}"></div>
+              <div class="body"><h3 style="font-size:1rem;">{{ r.name }}</h3><span class="price">{{ r.price|rupiah }}</span></div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <div>
+        <div class="stat-card" style="position:sticky;top:100px;">
+          <p class="eyebrow">Harga tiket</p>
+          <h3 style="font-size:1.8rem;color:var(--ember);">{{ dest.price|rupiah }} <span style="font-size:.9rem;color:var(--stone);font-weight:500;">/ orang</span></h3>
+
+          {% if current_user and current_user.role == 'user' %}
+          <form method="post" action="{{ url_for('create_booking', dest_id=dest.id) }}" style="margin-top:20px;">
+            <div class="form-group">
+              <label>Tanggal Kunjungan</label>
+              <input type="date" name="visit_date" min="{{ today }}" required>
+            </div>
+            <div class="form-group">
+              <label>Jumlah Tiket</label>
+              <input type="number" name="qty" min="1" max="20" value="1" required>
+            </div>
+            <button class="btn btn-primary btn-block" type="submit">Pesan Tiket Sekarang</button>
+          </form>
+          {% elif current_user %}
+          <p class="form-hint" style="margin-top:16px;">Masuk sebagai <b>{{ current_user.role }}</b> tidak dapat memesan tiket. Gunakan akun wisatawan untuk memesan.</p>
+          {% else %}
+          <div style="margin-top:20px;">
+            <a href="{{ url_for('login', next=request.path) }}" class="btn btn-dark btn-block">Masuk untuk Memesan</a>
+            <p class="form-hint">Belum punya akun? <a href="{{ url_for('register') }}" style="color:var(--ember);font-weight:700;">Daftar di sini</a></p>
+          </div>
+          {% endif %}
+
+          <div class="demo-box">
+            Kuota harian: {{ dest.quota_per_day }} pengunjung<br>
+            Kategori: {{ dest.category }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Kelola Destinasi — GoWisata{% endblock %}
+{% block content %}
+<div class="dash">
+  <aside class="dash-side">
+    <p class="role-tag">Admin</p>
+    <nav>
+      <a href="{{ url_for('admin_dashboard') }}">Ringkasan</a>
+      <a class="active" href="{{ url_for('admin_destinations') }}">Kelola Destinasi</a>
+      <a href="{{ url_for('admin_verify') }}">Verifikasi Tiket</a>
+      <a href="{{ url_for('admin_transactions') }}">Transaksi</a>
+    </nav>
+  </aside>
+  <main class="dash-main">
+    <div class="section-head">
+      <div><p class="eyebrow">Admin Panel</p><h1 style="font-size:1.6rem;">Kelola Destinasi Wisata</h1></div>
+      <a href="{{ url_for('admin_destination_add') }}" class="btn btn-primary">+ Tambah Destinasi</a>
+    </div>
+
+    <div class="table-responsive"><table>
+      <thead><tr><th>Nama</th><th>Kategori</th><th>Lokasi</th><th>Harga</th><th>Status</th><th>Aksi</th></tr></thead>
+      <tbody>
+        {% for d in items %}
+        <tr>
+          <td>{{ d.name }}</td>
+          <td>{{ d.category }}</td>
+          <td>{{ d.location }}</td>
+          <td>{{ d.price|rupiah }}</td>
+          <td>{% if d.is_active %}<span class="status-badge status-paid">aktif</span>{% else %}<span class="status-badge status-cancelled">nonaktif</span>{% endif %}</td>
+          <td style="display:flex;gap:8px;">
+            <a class="btn btn-sm btn-outline" href="{{ url_for('admin_destination_edit', dest_id=d.id) }}">Edit</a>
+            <form method="post" action="{{ url_for('admin_destination_delete', dest_id=d.id) }}" onsubmit="return confirm('Hapus destinasi ini?');">
+              <button class="btn btn-sm btn-ghost" type="submit" style="color:var(--ember);">Hapus</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table></div>
+  </main>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Edit' if dest else 'Tambah' }} Destinasi — GoWisata{% endblock %}
+{% block content %}
+<div class="dash">
+  <aside class="dash-side">
+    <p class="role-tag">Admin</p>
+    <nav>
+      <a href="{{ url_for('admin_dashboard') }}">Ringkasan</a>
+      <a class="active" href="{{ url_for('admin_destinations') }}">Kelola Destinasi</a>
+      <a href="{{ url_for('admin_verify') }}">Verifikasi Tiket</a>
+      <a href="{{ url_for('admin_transactions') }}">Transaksi</a>
+    </nav>
+  </aside>
+  <main class="dash-main">
+    <p class="eyebrow">Admin Panel</p>
+    <h1 style="font-size:1.6rem;">{{ 'Edit Destinasi' if dest else 'Tambah Destinasi Baru' }}</h1>
+
+    <form method="post" class="stat-card" style="max-width:640px;margin-top:20px;">
+      <div class="form-group"><label>Nama Destinasi</label><input type="text" name="name" value="{{ dest.name if dest else '' }}" required></div>
+      <div class="form-group"><label>Kategori</label>
+        <select name="category" required>
+          {% for c in ['Pegunungan','Budaya','Petualangan','Alam Buatan'] %}
+          <option value="{{ c }}" {% if dest and dest.category == c %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group"><label>Lokasi</label><input type="text" name="location" value="{{ dest.location if dest else '' }}" required></div>
+      <div class="form-group"><label>Harga Tiket (Rp)</label><input type="number" name="price" value="{{ dest.price if dest else 0 }}" required></div>
+      <div class="form-group"><label>Deskripsi</label><textarea name="description" rows="4" required>{{ dest.description if dest else '' }}</textarea></div>
+      <div class="form-group"><label>Kuota Harian</label><input type="number" name="quota_per_day" value="{{ dest.quota_per_day if dest else 200 }}"></div>
+      {% if not dest %}
+      <div class="form-group"><label>Latitude</label><input type="text" name="latitude" value="-7.6" required></div>
+      <div class="form-group"><label>Longitude</label><input type="text" name="longitude" value="110.4" required></div>
+      <div class="form-group"><label>Nama File Gambar (di static/img/destinations/)</label><input type="text" name="image" placeholder="default.png"></div>
+      {% endif %}
+      {% if dest %}
+      <div class="form-group">
+        <label><input type="checkbox" name="is_active" style="width:auto;display:inline-block;" {% if dest.is_active %}checked{% endif %}> Destinasi Aktif</label>
+      </div>
+      {% endif %}
+      <button class="btn btn-primary btn-block" type="submit">{{ 'Simpan Perubahan' if dest else 'Tambah Destinasi' }}</button>
+    </form>
+  </main>
+</div>
+{% endblock %}
