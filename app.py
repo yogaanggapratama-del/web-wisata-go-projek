@@ -472,7 +472,7 @@ def seed_data():
     admin.set_password('admin123')
     owner = User(name='Owner Dinas Pariwisata', email='owner@gowisata.id', role='owner', phone='081200000002')
     owner.set_password('owner123')
-    demo = User(name='Budi Santoso', email='budi@gowisata.id', role='user', phone='081200000003')
+    demo = User(name='Budi Santoso', email='yoga@gowisata.id', role='user', phone='081200000003')
     demo.set_password('user123')
     db.session.add_all([admin, owner, demo])
 
