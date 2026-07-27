@@ -197,11 +197,23 @@ dsb. Bisa langsung dipakai untuk laporan atau slide presentasi/kompetisi.
 
 Fitur yang secara sengaja **belum** diimplementasikan karena di luar ruang
 lingkup SRS (bab 1.3) — cocok disebut sebagai "pengembangan selanjutnya"
-saat presentasi:
-- Payment gateway asli (saat ini masih simulasi)
-- Aplikasi mobile Android/iOS
-- Notifikasi otomatis email/WhatsApp
-- Fitur ulasan & rating wisata
+saat presentasi/pameran. Berikut penjelasan tiap poin supaya siap kalau
+ditanya juri:
+
+- **Payment gateway asli** — pembayaran saat ini masih simulasi, belum
+  terhubung ke payment gateway sungguhan (Midtrans, Xendit, dll), jadi
+  belum bisa memproses uang sungguhan. *Ini poin yang paling sering
+  ditanya juri.*
+- **Notifikasi otomatis** — belum ada notifikasi email/WhatsApp konfirmasi
+  otomatis setelah booking berhasil. Saat ini konfirmasi hanya muncul di
+  halaman web (e-tiket QR langsung tampil setelah pembayaran simulasi).
+- **Fitur ulasan & rating** — wisatawan belum bisa memberi ulasan/rating
+  destinasi setelah berkunjung, padahal ini penting untuk membangun
+  kepercayaan pengguna baru.
+- **Sistem approval berjenjang** — saat ini baru ada 1 level admin, belum
+  ada pembagian akses yang lebih detail (misalnya admin per destinasi,
+  super-admin, dsb).
+- Aplikasi mobile Android/iOS (native)
 
 ---
 
