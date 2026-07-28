@@ -325,40 +325,74 @@ def admin_destinations():
     return render_template('admin_destinations.html', items=items)
 
 
+def _parse_int(raw, default=0):
+    raw = (raw or '').strip()
+    if not raw:
+        return default
+    try:
+        return int(float(raw.replace(',', '.')))
+    except (ValueError, TypeError):
+        raise ValueError(f"Nilai '{raw}' bukan angka yang valid.")
+
+
+def _parse_float(raw, default=0.0):
+    raw = (raw or '').strip()
+    if not raw:
+        return default
+    try:
+        return float(raw.replace(',', '.'))
+    except (ValueError, TypeError):
+        raise ValueError(f"Nilai '{raw}' bukan angka yang valid.")
+
+
 @app.route('/admin/destinasi/tambah', methods=['GET', 'POST'])
 @login_required(role='admin')
 def admin_destination_add():
     if request.method == 'POST':
-        d = Destination(
-            name=request.form.get('name'),
-            category=request.form.get('category'),
-            location=request.form.get('location'),
-            price=int(request.form.get('price', 0)),
-            description=request.form.get('description'),
-            image=request.form.get('image') or 'default.png',
-            latitude=float(request.form.get('latitude', -7.6)),
-            longitude=float(request.form.get('longitude', 110.4)),
-            quota_per_day=int(request.form.get('quota_per_day', 200)),
-        )
+        try:
+            d = Destination(
+                name=request.form.get('name', '').strip(),
+                category=request.form.get('category'),
+                location=request.form.get('location', '').strip(),
+                price=_parse_int(request.form.get('price'), 0),
+                description=request.form.get('description'),
+                image=request.form.get('image') or 'default.png',
+                latitude=_parse_float(request.form.get('latitude'), -7.6),
+                longitude=_parse_float(request.form.get('longitude'), 110.4),
+                quota_per_day=_parse_int(request.form.get('quota_per_day'), 200),
+            )
+        except ValueError as e:
+            flash(f'Gagal menambahkan destinasi: {e}', 'danger')
+            return render_template('admin_destination_form.html', dest=None, form=request.form)
+
+        if not d.name or not d.location:
+            flash('Nama dan lokasi destinasi wajib diisi.', 'danger')
+            return render_template('admin_destination_form.html', dest=None, form=request.form)
+
         db.session.add(d)
         db.session.commit()
         flash('Destinasi berhasil ditambahkan.', 'success')
         return redirect(url_for('admin_destinations'))
     return render_template('admin_destination_form.html', dest=None)
 
-
 @app.route('/admin/destinasi/<int:dest_id>/edit', methods=['GET', 'POST'])
 @login_required(role='admin')
 def admin_destination_edit(dest_id):
     d = Destination.query.get_or_404(dest_id)
     if request.method == 'POST':
-        d.name = request.form.get('name')
-        d.category = request.form.get('category')
-        d.location = request.form.get('location')
-        d.price = int(request.form.get('price', 0))
-        d.description = request.form.get('description')
-        d.quota_per_day = int(request.form.get('quota_per_day', 200))
-        d.is_active = bool(request.form.get('is_active'))
+        try:
+            d.name = request.form.get('name', '').strip()
+            d.category = request.form.get('category')
+            d.location = request.form.get('location', '').strip()
+            d.price = _parse_int(request.form.get('price'), d.price)
+            d.description = request.form.get('description')
+            d.quota_per_day = _parse_int(request.form.get('quota_per_day'), d.quota_per_day)
+            d.is_active = bool(request.form.get('is_active'))
+        except ValueError as e:
+            db.session.rollback()
+            flash(f'Gagal memperbarui destinasi: {e}', 'danger')
+            return render_template('admin_destination_form.html', dest=d)
+
         db.session.commit()
         flash('Destinasi berhasil diperbarui.', 'success')
         return redirect(url_for('admin_destinations'))
@@ -472,7 +506,7 @@ def seed_data():
     admin.set_password('admin123')
     owner = User(name='Owner Dinas Pariwisata', email='owner@gowisata.id', role='owner', phone='081200000002')
     owner.set_password('owner123')
-    demo = User(name='yoga pratama', email='yoga@gowisata.id', role='user', phone='081200000003')
+    demo = User(name='Yoga Angga Pratama', email='yoga@gowisata.id', role='user', phone='081200000003')
     demo.set_password('user123')
     db.session.add_all([admin, owner, demo])
 
@@ -510,7 +544,11 @@ def seed_data():
     # seed some historical bookings for owner/admin analytics demo
     import calendar
     dests = Destination.query.all()
-    demo_user = User.query.filter_by(email='budi@gowisata.id').first()
+    demo_user = demo  # gunakan objek yang baru dibuat, jangan query ulang (bisa None di beberapa host)
+    if demo_user is None or not dests:
+        # Data inti (user & destinasi) sudah tersimpan; lewati booking contoh
+        # daripada membuat seluruh aplikasi gagal start.
+        return
     rnd = random.Random(42)
     months = ['2026-04', '2026-05', '2026-06', '2026-07']
     for m in months:
